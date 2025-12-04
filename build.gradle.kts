@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.plugin.spring)
+
     alias(libs.plugins.spring.framework.boot)
 }
 
@@ -13,7 +14,12 @@ repositories {
 
 dependencies {
     implementation(libs.kotlin.reflect)
+    implementation(libs.kotlinx.coroutines.core)
+
     implementation(libs.spring.boot.starter)
+
+    implementation(libs.telegrambots.springboot.longpolling.starter)
+    implementation(libs.telegrambots.client)
 }
 
 kotlin {
