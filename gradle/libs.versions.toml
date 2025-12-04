@@ -1,9 +1,18 @@
 [libraries]
+# минимальный стартер для spring boot приложения
+spring-boot-starter = { group = "org.springframework.boot", name = "spring-boot-starter", version.ref = "spring-boot" }
 
 [bundles]
 
 [plugins]
+# компиляция в jvm
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+# automatically opens classes and methods (unlike in Java, the default qualifier is final in Kotlin)
+# annotated or meta-annotated with Spring annotations.
+kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+# добавляет задачи по работе со spring boot app
+spring-framework-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 
 [versions]
 kotlin = "2.2.21"
+spring-boot = "4.0.0"

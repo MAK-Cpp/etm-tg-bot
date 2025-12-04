@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.plugin.spring)
+    alias(libs.plugins.spring.framework.boot)
 }
 
 group = "ru.makcpp"
@@ -10,6 +12,7 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.spring.boot.starter)
 }
 
 kotlin {

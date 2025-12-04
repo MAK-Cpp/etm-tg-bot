@@ -1,1 +1,1 @@
-rootProject.name = "etm-bot"
+rootProject.name = "etm-solutions-bot"
