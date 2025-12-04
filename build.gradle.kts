@@ -16,7 +16,7 @@ dependencies {
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.coroutines.core)
 
-    implementation(libs.spring.boot.starter)
+    implementation(libs.spring.boot.starter.validation)
 
     implementation(libs.telegrambots.springboot.longpolling.starter)
     implementation(libs.telegrambots.client)
