@@ -12,6 +12,7 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.kotlin.reflect)
     implementation(libs.spring.boot.starter)
 }
 

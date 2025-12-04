@@ -1,4 +1,6 @@
 [libraries]
+# kotlin-рефлексия (нужна spring-у)
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 # минимальный стартер для spring boot приложения
 spring-boot-starter = { group = "org.springframework.boot", name = "spring-boot-starter", version.ref = "spring-boot" }
 

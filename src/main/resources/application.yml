@@ -1,3 +1,6 @@
 spring:
   application:
     name: etm-solutions-bot
+
+bot:
+  token: test
