@@ -5,8 +5,13 @@ spring:
 logging:
   level:
     root: info
-    ru.makcpp.etm_solutions_bot.tg.update_consumer.LongPollingCoroutinesUpdateConsumer: TRACE
+#    ru.makcpp.etm_solutions_bot.tg.update_consumer.LongPollingCoroutinesUpdateConsumer: TRACE
 
 bot:
   token: ${BOT_TOKEN}
   etnodary-user-id: 912834255
+  commands:
+    - name: help
+      description: Получить помощь по боту.
+    - name: start
+      description: Запустить бота.
