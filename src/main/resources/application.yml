@@ -21,4 +21,4 @@ bot:
       description: Удалить все сообщения, которые могу.
     - name: clearAll
       description: Вызвать /clear во всех активных чатах, кроме этого
-      permission: ADMIN
+      roles: ADMIN

@@ -19,6 +19,6 @@ data class EtmTelegramBotConfiguration(
         val name: String,
         @field:NotBlank
         val description: String,
-        val permission: UserRole = UserRole.USER
+        val roles: Set<UserRole> = UserRole.entries.toSet()
     )
 }

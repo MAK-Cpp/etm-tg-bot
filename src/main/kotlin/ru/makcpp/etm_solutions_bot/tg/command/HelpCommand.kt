@@ -17,7 +17,7 @@ class HelpCommand(
 
     private val helpMessages = UserRole.entries.associateWith { role ->
         val availableCommands =
-            config.commands.filter { command -> command.permission.permissionLevel <= role.permissionLevel }
+            config.commands.filter { command -> command.roles.contains(role) }
         buildString {
             if (role != UserRole.USER) {
                 appendLine("Ваша роль: $role")

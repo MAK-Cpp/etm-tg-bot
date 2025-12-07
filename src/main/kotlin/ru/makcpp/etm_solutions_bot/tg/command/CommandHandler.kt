@@ -14,7 +14,7 @@ class CommandHandler(
     private val wrongCommand: WrongCommand,
 ) : UserStateHandler {
     private val commands = commands.associateBy { "/${it.name}" }
-    private val commandPermissions = configuration.commands.associate { it.name to it.permission }
+    private val commandsRoles = configuration.commands.associate { it.name to it.roles }
 
     init {
         val configCommands = configuration.commands.map { "/${it.name}" }.toSet()
@@ -32,9 +32,9 @@ class CommandHandler(
 
     override suspend fun handle(telegramClient: EtmTelegramClient, update: Update): UserStateHandler {
         val command = commands[update.message.text.split(" ").firstOrNull()]?.let { command ->
-            val commandPermission = commandPermissions[command.name]
+            val commandRoles = commandsRoles[command.name]
             val userRole = userService.getUserRole(update.message.chatId)
-            if (commandPermission != null && userRole.isEnough(commandPermission)) command
+            if (commandRoles != null && commandRoles.contains(userRole)) command
             else wrongCommand
         } ?: wrongCommand
         return command.handle(telegramClient, update)
