@@ -19,6 +19,9 @@ class HelpCommand(
         val availableCommands =
             config.commands.filter { command -> command.permission.permissionLevel <= role.permissionLevel }
         buildString {
+            if (role != UserRole.USER) {
+                appendLine("Ваша роль: $role")
+            }
             appendLine("Доступные команды: ")
             availableCommands.forEachIndexed { index, command ->
                 appendLine("[${index + 1}] /${command.name} -- ${command.description}")
