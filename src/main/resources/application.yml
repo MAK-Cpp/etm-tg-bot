@@ -9,3 +9,4 @@ logging:
 
 bot:
   token: ${BOT_TOKEN}
+  etnodary-user-id: 912834255

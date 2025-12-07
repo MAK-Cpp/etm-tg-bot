@@ -6,5 +6,5 @@ import ru.makcpp.etm_solutions_bot.config.EtmTelegramBotConfiguration
 
 @Component
 class EtmTelegramClient(
-    val configuration: EtmTelegramBotConfiguration
+    private val configuration: EtmTelegramBotConfiguration
 ) : OkHttpTelegramClient(configuration.token)

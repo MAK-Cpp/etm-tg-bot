@@ -9,4 +9,5 @@ import org.springframework.validation.annotation.Validated
 class EtmTelegramBotConfiguration(
     @field:NotBlank
     val token: String,
+    val etnodaryUserId: Int,
 )
