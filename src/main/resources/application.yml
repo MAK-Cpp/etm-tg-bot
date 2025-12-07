@@ -5,13 +5,20 @@ spring:
 logging:
   level:
     root: info
-#    ru.makcpp.etm_solutions_bot.tg.update_consumer.LongPollingCoroutinesUpdateConsumer: TRACE
+    ru.makcpp.etm_solutions_bot.tg.update_consumer.LongPollingCoroutinesUpdateConsumer: TRACE
+    ru.makcpp.etm_solutions_bot.tg.command.ClearCommand: TRACE
 
 bot:
   token: ${BOT_TOKEN}
-  etnodary-user-id: 912834255
+#  etnodary-user-id: 912834255
+  etnodary-user-id: 428027805
   commands:
     - name: help
       description: Получить помощь по боту.
     - name: start
       description: Запустить бота.
+    - name: clear
+      description: Удалить все сообщения, которые могу.
+    - name: clearAll
+      description: Вызвать /clear во всех активных чатах, кроме этого
+      permission: ADMIN
