@@ -3,7 +3,7 @@ package ru.makcpp.etm_solutions_bot.config
 import jakarta.validation.constraints.NotBlank
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.validation.annotation.Validated
-import ru.makcpp.etm_solutions_bot.enums.UserRole
+import ru.makcpp.etm_solutions_bot.enums.Role
 
 @ConfigurationProperties(prefix = "bot", ignoreUnknownFields = false)
 @Validated
@@ -19,6 +19,6 @@ data class EtmTelegramBotConfiguration(
         val name: String,
         @field:NotBlank
         val description: String,
-        val roles: Set<UserRole> = UserRole.entries.toSet()
+        val roles: Set<Role> = Role.entries.toSet()
     )
 }

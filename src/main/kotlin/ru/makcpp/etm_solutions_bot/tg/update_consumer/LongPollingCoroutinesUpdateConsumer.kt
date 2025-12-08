@@ -1,6 +1,7 @@
 package ru.makcpp.etm_solutions_bot.tg.update_consumer
 
 import jakarta.annotation.PreDestroy
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,11 +14,14 @@ import org.telegram.telegrambots.meta.api.objects.Update
 
 abstract class LongPollingCoroutinesUpdateConsumer : LongPollingUpdateConsumer {
     companion object {
+        private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+            log.error("Error in coroutineScope: ", throwable)
+        }
         private val log = LoggerFactory.getLogger(LongPollingCoroutinesUpdateConsumer::class.java)
     }
 
     private val scope =
-        CoroutineScope(SupervisorJob() + Dispatchers.Default + CoroutineName("LongPollingCoroutinesUpdateConsumer"))
+        CoroutineScope(SupervisorJob() + Dispatchers.Default + CoroutineName("LongPollingCoroutinesUpdateConsumer") + exceptionHandler)
 
     final override fun consume(updates: List<Update>) {
         updates.forEach { update ->

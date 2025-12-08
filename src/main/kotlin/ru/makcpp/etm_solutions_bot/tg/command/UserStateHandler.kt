@@ -9,7 +9,7 @@ interface UserStateHandler {
     suspend fun handle(telegramClient: EtmTelegramClient, update: Update): UserStateHandler
 }
 
-object EmptyStateHandler : UserStateHandler {
+object EmptyState : UserStateHandler {
     override suspend fun handle(telegramClient: EtmTelegramClient, update: Update): UserStateHandler = this
 }
 
@@ -31,6 +31,24 @@ class WrongCommand : UserStateHandler {
                 )
                 .build()
         )
-        return EmptyStateHandler
+        return EmptyState
+    }
+}
+
+@Component
+class NoCommand : UserStateHandler {
+    override suspend fun handle(telegramClient: EtmTelegramClient, update: Update): UserStateHandler {
+        telegramClient.sendMessage(
+            SendMessage.builder()
+                .chatId(update.message.chatId)
+                .text(
+                    """
+                    |Ожидалась команда.
+                    |Чтобы узнать список команд, вызовите /help
+                    """.trimMargin()
+                )
+                .build()
+        )
+        return EmptyState
     }
 }

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
 import ru.makcpp.etm_solutions_bot.config.EtmTelegramBotConfiguration
-import ru.makcpp.etm_solutions_bot.enums.UserRole
+import ru.makcpp.etm_solutions_bot.enums.Role
 import ru.makcpp.etm_solutions_bot.service.UserService
 import ru.makcpp.etm_solutions_bot.tg.client.EtmTelegramClient
 
@@ -15,11 +15,11 @@ class HelpCommand(
 ) : Command {
     override val name: String = "help"
 
-    private val helpMessages = UserRole.entries.associateWith { role ->
+    private val helpMessages = Role.entries.associateWith { role ->
         val availableCommands =
             config.commands.filter { command -> command.roles.contains(role) }
         buildString {
-            if (role != UserRole.USER) {
+            if (role != Role.USER) {
                 appendLine("Ваша роль: $role")
             }
             appendLine("Доступные команды: ")
@@ -39,6 +39,6 @@ class HelpCommand(
                 .text(helpText)
                 .build()
         )
-        return EmptyStateHandler
+        return EmptyState
     }
 }

@@ -10,7 +10,7 @@ import ru.makcpp.etm_solutions_bot.config.EtmTelegramBotConfiguration
 import ru.makcpp.etm_solutions_bot.service.MessagesHistoryService
 import ru.makcpp.etm_solutions_bot.tg.client.EtmTelegramClient
 import ru.makcpp.etm_solutions_bot.tg.command.CommandHandler
-import ru.makcpp.etm_solutions_bot.tg.command.EmptyStateHandler
+import ru.makcpp.etm_solutions_bot.tg.command.EmptyState
 import ru.makcpp.etm_solutions_bot.tg.update_consumer.LongPollingCoroutinesUpdateConsumer
 import ru.makcpp.etm_solutions_bot.tg.command.UserStateHandler
 import java.util.concurrent.ConcurrentHashMap
@@ -36,7 +36,7 @@ class EtmTelegramBot(
         val chatId = update.message.chatId
         messagesHistoryService.addUserMessage(update.message)
         userStates[chatId] = when (val state = userStates[chatId]) {
-            EmptyStateHandler, null -> commandHandler
+            EmptyState, null -> commandHandler
             else -> state
         }.handle(telegramClient, update)
     }

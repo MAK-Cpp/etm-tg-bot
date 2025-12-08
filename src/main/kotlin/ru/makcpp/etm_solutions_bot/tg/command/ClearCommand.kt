@@ -15,6 +15,6 @@ class ClearCommand(private val messagesHistoryService: MessagesHistoryService) :
         messagesHistoryService.getChatHistory(chatId)?.let { history ->
             ClearAllCommand.deleteAllMessagesInChat(telegramClient, chatId, history)
         }
-        return EmptyStateHandler
+        return EmptyState
     }
 }

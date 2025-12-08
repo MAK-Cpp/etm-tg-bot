@@ -6,7 +6,6 @@ logging:
   level:
     root: info
     ru.makcpp.etm_solutions_bot.tg.update_consumer.LongPollingCoroutinesUpdateConsumer: TRACE
-    ru.makcpp.etm_solutions_bot.tg.command.ClearCommand: TRACE
 
 bot:
   token: ${BOT_TOKEN}
@@ -22,3 +21,6 @@ bot:
     - name: clearAll
       description: Вызвать /clear во всех активных чатах, кроме этого
       roles: ADMIN
+    - name: sendTask
+      description: Отправить задачу(-и) на решение.
+      roles: USER

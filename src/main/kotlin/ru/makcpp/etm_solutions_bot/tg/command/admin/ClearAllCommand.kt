@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException
 import ru.makcpp.etm_solutions_bot.service.MessagesHistoryService
 import ru.makcpp.etm_solutions_bot.tg.client.EtmTelegramClient
 import ru.makcpp.etm_solutions_bot.tg.command.Command
-import ru.makcpp.etm_solutions_bot.tg.command.EmptyStateHandler
+import ru.makcpp.etm_solutions_bot.tg.command.EmptyState
 import ru.makcpp.etm_solutions_bot.tg.command.UserStateHandler
 
 @Component
@@ -91,6 +91,6 @@ class ClearAllCommand(private val messagesHistoryService: MessagesHistoryService
                 .text(resultMessage)
                 .build()
         )
-        return EmptyStateHandler
+        return EmptyState
     }
 }
