@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update
 import ru.makcpp.etm_solutions_bot.config.EtmTelegramBotConfiguration
 import ru.makcpp.etm_solutions_bot.service.UserService
 import ru.makcpp.etm_solutions_bot.tg.client.EtmTelegramClient
-import ru.makcpp.etm_solutions_bot.tg.utils.findEntities
+import ru.makcpp.etm_solutions_bot.tg.utils.findEntitiesInMessage
 
 @Component
 class CommandHandler(
@@ -34,13 +34,11 @@ class CommandHandler(
     }
 
     override suspend fun handle(telegramClient: EtmTelegramClient, update: Update): UserStateHandler {
-        val message = update.message
-            ?: return noCommand.handle(telegramClient, update)
-        val commandName = message.findEntities(EntityType.BOTCOMMAND).firstOrNull()
+        val commandName = update.findEntitiesInMessage(EntityType.BOTCOMMAND).firstOrNull()
             ?: return noCommand.handle(telegramClient, update)
         val command = commands[commandName]?.let { command ->
             val commandRoles = commandsRoles[command.name]
-            val userRole = userService.getUserRole(message.chatId)
+            val userRole = userService.getUserRole(update.message.chatId)
             if (commandRoles != null && commandRoles.contains(userRole)) command
             else wrongCommand
         } ?: wrongCommand

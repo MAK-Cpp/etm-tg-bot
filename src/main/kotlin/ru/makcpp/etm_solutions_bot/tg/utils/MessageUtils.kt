@@ -7,8 +7,10 @@ import org.telegram.telegrambots.meta.api.objects.message.Message
  *
  * @see org.telegram.telegrambots.meta.api.objects.EntityType
  */
-fun Message.findEntities(entityType: String): List<String> =
-    (entities ?: emptyList())
+fun Message.findEntities(entityType: String): List<String> {
+    val entities = this.entities ?: return emptyList()
+    return entities
         .filter { it.type == entityType }
         .sortedBy { it.offset }
-        .map { text.substring(it.offset, it.length) }
+        .map { text.substring(it.offset, it.offset + it.length) }
+}
