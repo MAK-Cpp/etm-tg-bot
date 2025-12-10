@@ -14,6 +14,7 @@ import ru.makcpp.etm_solutions_bot.tg.command.EmptyState
 import ru.makcpp.etm_solutions_bot.tg.command.NoCommand
 import ru.makcpp.etm_solutions_bot.tg.command.ReRunHandleUpdateState
 import ru.makcpp.etm_solutions_bot.tg.command.UserStateHandler
+import ru.makcpp.etm_solutions_bot.tg.command.admin.AdminReplyToTasksHandler
 import ru.makcpp.etm_solutions_bot.tg.update_consumer.LongPollingCoroutinesUpdateConsumer
 import ru.makcpp.etm_solutions_bot.tg.utils.UpdateType
 import ru.makcpp.etm_solutions_bot.tg.utils.type
@@ -24,7 +25,8 @@ class EtmTelegramBot(
     private val configuration: EtmTelegramBotConfiguration,
     private val commandHandler: CommandHandler,
     private val telegramClient: EtmTelegramClient,
-    private val messagesHistoryService: MessagesHistoryService
+    private val messagesHistoryService: MessagesHistoryService,
+    private val adminReplyToTasksHandler: AdminReplyToTasksHandler,
 ) : LongPollingCoroutinesUpdateConsumer(), SpringLongPollingBot {
     companion object {
         private val log = LoggerFactory.getLogger(EtmTelegramBot::class.java)
@@ -43,9 +45,9 @@ class EtmTelegramBot(
 
     private suspend fun handleUpdate(update: Update, isLast: Boolean) {
         val chatId = update.message.chatId
-        val state = when (val updateType = update.type) {
+        val state = when (val updateType = update.type) { // TODO: можно попытаться оптимизировать
             is UpdateType.Command -> commandHandler
-            is UpdateType.MessageReply -> TODO()
+            is UpdateType.MessageReply -> adminReplyToTasksHandler
             UpdateType.None -> userStates[chatId] ?: NoCommand
         }
         if (state is ReRunHandleUpdateState) {
