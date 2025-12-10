@@ -1,12 +1,14 @@
 package ru.makcpp.etm_solutions_bot.tg.command
 
-import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
 import ru.makcpp.etm_solutions_bot.tg.client.EtmTelegramClient
 
 interface UserStateHandler {
     suspend fun handle(telegramClient: EtmTelegramClient, update: Update): UserStateHandler
+
+    suspend fun handleLast(telegramClient: EtmTelegramClient, update: Update): UserStateHandler =
+        handle(telegramClient, update)
 }
 
 object EmptyState : UserStateHandler {
@@ -17,8 +19,7 @@ interface Command : UserStateHandler {
     val name: String
 }
 
-@Component
-class WrongCommand : UserStateHandler {
+object WrongCommand : UserStateHandler {
     override suspend fun handle(telegramClient: EtmTelegramClient, update: Update): UserStateHandler {
         telegramClient.sendMessage(
             SendMessage.builder()
@@ -35,8 +36,7 @@ class WrongCommand : UserStateHandler {
     }
 }
 
-@Component
-class NoCommand : UserStateHandler {
+object NoCommand : UserStateHandler {
     override suspend fun handle(telegramClient: EtmTelegramClient, update: Update): UserStateHandler {
         telegramClient.sendMessage(
             SendMessage.builder()

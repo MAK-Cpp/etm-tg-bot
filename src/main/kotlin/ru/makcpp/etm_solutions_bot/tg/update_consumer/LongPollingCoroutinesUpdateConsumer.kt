@@ -8,9 +8,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.slf4j.LoggerFactory
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer
 import org.telegram.telegrambots.meta.api.objects.Update
+import java.util.concurrent.ConcurrentHashMap
 
 abstract class LongPollingCoroutinesUpdateConsumer : LongPollingUpdateConsumer {
     companion object {
@@ -22,17 +25,24 @@ abstract class LongPollingCoroutinesUpdateConsumer : LongPollingUpdateConsumer {
 
     private val scope =
         CoroutineScope(SupervisorJob() + Dispatchers.Default + CoroutineName("LongPollingCoroutinesUpdateConsumer") + exceptionHandler)
+    private val userLocks: ConcurrentHashMap<Long, Mutex> = ConcurrentHashMap()
 
     final override fun consume(updates: List<Update>) {
-        updates.forEach { update ->
-            log.trace("handling update {}", update)
-            scope.launch {
-                consume(update)
+        updates
+            .filter { it.hasMessage() }
+            .groupBy { it.message.chatId }
+            .forEach { (chatId, chatUpdates) ->
+                scope.launch {
+                    log.trace("handling ${chatUpdates.size} updates for chat $chatId")
+                    userLocks.getOrPut(chatId) { Mutex() }
+                        .withLock {
+                            chatUpdates.forEachIndexed { i, update -> consume(update, i == chatUpdates.size - 1) }
+                        }
+                }
             }
-        }
     }
 
-    abstract suspend fun consume(update: Update)
+    abstract suspend fun consume(update: Update, isLast: Boolean)
 
     @PreDestroy
     fun shutdown() {

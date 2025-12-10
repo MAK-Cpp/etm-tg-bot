@@ -13,7 +13,10 @@ class StartCommand : Command {
         telegramClient.sendMessage(
             SendMessage.builder()
                 .chatId(update.message.chatId)
-                .text("Привет, ${update.message.from.firstName}")
+                .text("""
+                    Привет, ${update.message?.from?.firstName ?: "незнакомец"}.
+                    Чтобы узнать, как пользоваться ботом, используйте команду /help.
+                """.trimIndent())
                 .build()
         )
         return EmptyState

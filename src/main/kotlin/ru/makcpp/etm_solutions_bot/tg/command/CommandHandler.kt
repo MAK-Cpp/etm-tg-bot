@@ -13,8 +13,6 @@ class CommandHandler(
     commands: List<Command>,
     configuration: EtmTelegramBotConfiguration,
     private val userService: UserService,
-    private val wrongCommand: WrongCommand,
-    private val noCommand: NoCommand,
 ) : UserStateHandler {
     private val commands = commands.associateBy { "/${it.name}" }
     private val commandsRoles = configuration.commands.associate { it.name to it.roles }
@@ -35,13 +33,13 @@ class CommandHandler(
 
     override suspend fun handle(telegramClient: EtmTelegramClient, update: Update): UserStateHandler {
         val commandName = update.findEntitiesInMessage(EntityType.BOTCOMMAND).firstOrNull()
-            ?: return noCommand.handle(telegramClient, update)
+            ?: return NoCommand.handle(telegramClient, update)
         val command = commands[commandName]?.let { command ->
             val commandRoles = commandsRoles[command.name]
             val userRole = userService.getUserRole(update.message.chatId)
             if (commandRoles != null && commandRoles.contains(userRole)) command
-            else wrongCommand
-        } ?: wrongCommand
+            else WrongCommand
+        } ?: WrongCommand
         return command.handle(telegramClient, update)
     }
 }

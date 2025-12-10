@@ -11,8 +11,12 @@ import ru.makcpp.etm_solutions_bot.service.MessagesHistoryService
 import ru.makcpp.etm_solutions_bot.tg.client.EtmTelegramClient
 import ru.makcpp.etm_solutions_bot.tg.command.CommandHandler
 import ru.makcpp.etm_solutions_bot.tg.command.EmptyState
-import ru.makcpp.etm_solutions_bot.tg.update_consumer.LongPollingCoroutinesUpdateConsumer
+import ru.makcpp.etm_solutions_bot.tg.command.NoCommand
+import ru.makcpp.etm_solutions_bot.tg.command.ReRunHandleUpdateState
 import ru.makcpp.etm_solutions_bot.tg.command.UserStateHandler
+import ru.makcpp.etm_solutions_bot.tg.update_consumer.LongPollingCoroutinesUpdateConsumer
+import ru.makcpp.etm_solutions_bot.tg.utils.UpdateType
+import ru.makcpp.etm_solutions_bot.tg.utils.type
 import java.util.concurrent.ConcurrentHashMap
 
 @Component
@@ -32,13 +36,33 @@ class EtmTelegramBot(
 
     override fun getUpdatesConsumer(): LongPollingUpdateConsumer = this
 
-    override suspend fun consume(update: Update) {
-        val chatId = update.message.chatId
+    override suspend fun consume(update: Update, isLast: Boolean) {
         messagesHistoryService.addUserMessage(update.message)
-        userStates[chatId] = when (val state = userStates[chatId]) {
-            EmptyState, null -> commandHandler
-            else -> state
-        }.handle(telegramClient, update)
+        handleUpdate(update, isLast)
+    }
+
+    private suspend fun handleUpdate(update: Update, isLast: Boolean) {
+        val chatId = update.message.chatId
+        val state = when (val updateType = update.type) {
+            is UpdateType.Command -> commandHandler
+            is UpdateType.MessageReply -> TODO()
+            UpdateType.None -> userStates[chatId] ?: NoCommand
+        }
+        if (state is ReRunHandleUpdateState) {
+            userStates.remove(chatId)
+            handleUpdate(update, isLast)
+        } else {
+            if (isLast) {
+                val newState = state.handleLast(telegramClient, update)
+                if (newState is EmptyState) {
+                    userStates.remove(chatId)
+                } else {
+                    userStates[chatId] = newState
+                }
+            } else {
+                userStates[chatId] = state.handle(telegramClient, update)
+            }
+        }
     }
 
     @AfterBotRegistration
