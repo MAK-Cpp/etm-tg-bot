@@ -46,15 +46,33 @@ class SendTaskCommand(
             telegramClient.sendMessage(
                 SendMessage.builder()
                     .chatId(chatId)
+                    .text("Отправьте ваше ФИО:")
+                    .build()
+            )
+            return GetFioOfUser(configuration.etnodaryUserId)
+        }
+    }
+
+    class GetFioOfUser(private val adminChatId: Long) : UserStateHandler {
+        override suspend fun handle(
+            telegramClient: EtmTelegramClient,
+            update: Update
+        ): UserStateHandler {
+            val chatId = update.message.chat.id
+            val fio = update.message.text
+            telegramClient.sendMessage(
+                SendMessage.builder()
+                    .chatId(chatId)
                     .text("Отправьте задачи фотографиями, максимум 10.")
                     .build()
             )
-            SendTasksToAdminState(configuration.etnodaryUserId)
+            return SendTasksToAdminState(adminChatId, fio)
         }
     }
 
     class SendTasksToAdminState(
         private val adminChatId: Long,
+        private val fio: String,
         private val medias: MutableList<InputMedia> = mutableListOf(),
     ) : UserStateHandler {
         private suspend fun sendPhotosToAdmin(telegramClient: EtmTelegramClient, chatIdFrom: Long) {
@@ -125,7 +143,12 @@ class SendTaskCommand(
             medias += if (medias.isEmpty()) {
                 InputMediaPhoto.builder()
                     .media(photoFileId)
-                    .caption("Задачи от пользователя @${update.message.chat.userName}")
+                    .caption(
+                        """
+                        Задачи от пользователя @${update.message.chat.userName}
+                        ФИО: $fio
+                        """.trimIndent()
+                    )
                     .build()
             } else {
                 InputMediaPhoto(photoFileId)
