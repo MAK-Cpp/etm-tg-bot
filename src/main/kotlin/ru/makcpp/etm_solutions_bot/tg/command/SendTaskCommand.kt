@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto
 import ru.makcpp.etm_solutions_bot.config.EtmTelegramBotConfiguration
 import ru.makcpp.etm_solutions_bot.service.TasksService
 import ru.makcpp.etm_solutions_bot.tg.client.EtmTelegramClient
+import ru.makcpp.etm_solutions_bot.tg.utils.getPhotoFileId
 import ru.makcpp.etm_solutions_bot.tg.utils.hasPhoto
 
 @Component
@@ -60,6 +61,20 @@ class SendTaskCommand(
         ): UserStateHandler {
             val chatId = update.message.chat.id
             val fio = update.message.text
+            if (fio == null || fio.isEmpty()) {
+                telegramClient.sendMessage(
+                    SendMessage.builder()
+                        .chatId(chatId)
+                        .text(
+                            """
+                            Ваше сообщение не является ФИО.
+                            Отправьте ваше ФИО:
+                            """.trimIndent()
+                        )
+                        .build()
+                )
+                return this
+            }
             telegramClient.sendMessage(
                 SendMessage.builder()
                     .chatId(chatId)
@@ -138,7 +153,7 @@ class SendTaskCommand(
         private fun addPhoto(update: Update) {
             log.trace("Got a photo with media group id {}", update.message.mediaGroupId)
 
-            val photoFileId = update.message.photo.last().fileId
+            val photoFileId = update.getPhotoFileId()
 
             medias += if (medias.isEmpty()) {
                 InputMediaPhoto.builder()

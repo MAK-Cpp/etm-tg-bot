@@ -37,3 +37,5 @@ val Update.type: UpdateType
     }
 
 fun Update.hasPhoto(): Boolean = hasMessage() && message.hasPhoto()
+
+fun Update.getPhotoFileId(): String = message.photo.last().fileId

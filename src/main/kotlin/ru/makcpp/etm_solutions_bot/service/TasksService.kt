@@ -25,7 +25,7 @@ class TasksService {
         return chatsByTasks[taskId]
     }
 
-    fun removeTask(taskId: Int) {
-        chatsByTasks.remove(taskId)?.let { tasksByChats.remove(it) }
+    fun removeTaskByChatId(chatId: Long) {
+        tasksByChats.remove(chatId)?.let { chatsByTasks.remove(it) }
     }
 }
